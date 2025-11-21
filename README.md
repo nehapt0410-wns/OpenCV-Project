@@ -60,3 +60,144 @@ invoice-bounding-box-detection/
 ├─ README.md
 └─ requirements.txt
 
+
+- **Computer Vision**: OpenCV 
+## 4. Installation & Setup
+## 4.1. Python Libraries
+
+Install the required packages:
+pip install opencv-python pdf2image python-docx pillow streamlit matplotlib
+
+## 4.2. Poppler Installation (for PDF → Image)
+
+pdf2image needs Poppler to convert PDF pages to images.
+
+Download Poppler for Windows (e.g., from the official Poppler for Windows builds).
+
+Extract it somewhere, e.g.:
+C:\tools\poppler-25.11.0\Library\bin
+
+This path will be used as poppler_path in the code.
+
+Example in code:
+poppler_path = r"poppler-25.11.0\Library\bin"
+Adjust this path according to your actual poppler installation.
+
+## 5. Core Functions
+5.1. Load Invoice as Image
+5.2. Detect Text Blocks (Contours + Morphology)
+5.3. Categorize Blocks (Header / Table / Totals)
+  This uses simple vertical position rules:
+  
+  Top 25% → Header
+  
+  Middle 50% → Table
+  
+  Bottom 25% → Totals
+5.4. Draw Bounding Boxes
+5.5. End-to-End Pipeline
+## 6. Usage in Jupyter Notebook
+Example notebook code to run the full pipeline and visualize
+
+## 7. How the Algorithm Works (Conceptual)
+
+Load Document
+
+For PDFs: Convert first page to image using pdf2image.
+
+For Word files: Extract text and draw it onto a blank white image.
+
+Preprocess
+
+Convert to grayscale.
+
+Apply binary inverse threshold: text becomes white on black.
+
+Morphological Operations
+
+Use a rectangular kernel to connect nearby characters into larger blocks.
+
+This helps treat each logical text block as one contour.
+
+Contour Detection
+
+cv2.findContours finds connected components in the dilated image.
+
+Each contour is turned into a bounding rectangle.
+
+Filtering Noise
+
+Very small rectangles (height or width too small) are rejected.
+
+Categorization
+
+Based on the y-position of each box relative to image height.
+
+Top → header, middle → table, bottom → totals.
+
+Visualization
+
+Draw colored rectangles on the original invoice image.
+
+Display using Matplotlib.
+
+## 8. Customization & Tuning
+
+You can tweak the following to improve performance for different invoice layouts:
+
+Thresholding
+
+Adjust the value 180 in cv2.threshold.
+
+Morphology Kernel
+
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 3))
+
+Increase width for connecting columns, increase height for connecting rows.
+
+Noise Filtering
+
+Change w > 40 and h > 20 rules in detect_text_blocks.
+
+Section Boundaries
+
+Adjust 0.25 and 0.75 thresholds in categorize_blocks.
+
+## 9. Possible Extensions / Next Steps
+
+Streamlit Web UI
+
+Upload an invoice file via Streamlit.
+
+Show side-by-side:
+
+Original invoice
+
+Invoice with bounding boxes.
+
+Export Annotations
+
+Save coordinates of detected header/table/totals as JSON or CSV.
+
+OCR Integration
+
+Combine with pytesseract to extract actual text from each block.
+
+Multi-page PDFs
+
+Loop through all pages of the PDF and process each page.
+
+## 10. Known Limitations
+
+Very noisy or low-resolution invoices may not segment well.
+
+Complex layouts (multiple tables or side panels) may be misclassified.
+
+The header/table/totals logic is purely positional (based on y-coordinate).
+
+
+
+
+
+
+
