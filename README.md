@@ -88,5 +88,3 @@ poppler_path = r"poppler-25.11.0\Library\bin"
 ✅ Adjust this path according to your actual poppler installation.
 
 5. Core Functions
-5.1. Load Invoice as Image
-
