@@ -1,7 +1,10 @@
 Requirements
 
 Install dependencies:
-
+pip install opencv-python #cv2
+pip install numpy 
+pip install matplotlib
+#os
 pip install opencv-python pdf2image python-docx streamlit matplotlib
 
 Install Poppler (Required for PDF)
@@ -71,3 +74,4 @@ Copy code
 |                                                          |
 | [RED BOX] Totals                                         |
 +----------------------------------------------------------+
+
